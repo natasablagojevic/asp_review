@@ -2,14 +2,26 @@
 
 using namespace std;
 
-bool prost(int n)
+/* bool prost(int n)
 {
     for (int i = 2; i < n/2; i++)
         if (n % i == 0)
             return false;
 
     return true;
-}
+} */
+
+/* bool prost(int n)
+{
+    if (n == 1)
+        return false;
+
+    for (int i = 2; i*i <= n; i++)
+        if (n % i == 0)
+            return false;
+
+    return true;
+} */
 
 int main()
 {
