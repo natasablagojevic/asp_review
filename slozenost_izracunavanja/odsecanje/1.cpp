@@ -23,6 +23,18 @@ using namespace std;
     return true;
 } */
 
+bool prost(int n)
+{
+    if (n == 1 || (n != 2 && n%2 == 0) || (n != 3 && n%3 == 0))
+        return false;
+
+    for (int i = 1; (6*i-1)*(6*i-1) <= n; i++)
+        if (n % (6*i-1) == 0 || n % (6*i+1) == 0)
+            return false;
+
+    return true;
+}
+
 int main()
 {
     int n;
