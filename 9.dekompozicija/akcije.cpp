@@ -4,22 +4,30 @@
 
 using namespace std;
 
-void merge_sort(vector<int> &a, int l, int d, vector<int> &pom)
+int merge_sort(vector<int> &a, int l, int d, vector<int> &pom)
 {
   if (l >= d)
-    return ;
+    return 0;
 
   int s = (l+d)/2;
 
-  merge_sort(a, l, s, b);
-  merge_sort(a, s, d, b);
+  int resL = merge_sort(a, l, s, b);
+  int resD = merge_sort(a, s, d, b);
+  int resU = 0; // unakrsno
 
+  int j = l;
+  for (int i = s; i < d; i++) {
+    while (j < s && v[i] >= v[j]) 
+      j++;
 
-  int i = l, j = s, k = s+1;
+    resU += j - l;
+  }
 
   merge(a.begin() + l, a.begin() + s, a.begin() + s, a.begin() + d);
 
   copy(pom.begin(), pom.begin() + (d-l), a.begin() + l);
+
+  return resL + resD + resU;
 }
 
 int main()
@@ -31,7 +39,9 @@ int main()
   for (int i = 0; i < n; i++)
     cin >> v[i];
 
-  
+  vector<int> tmp(n);
+
+  cout << merge_sort(v, 0, n, tmp) << endl; 
 
 
   return 0;
