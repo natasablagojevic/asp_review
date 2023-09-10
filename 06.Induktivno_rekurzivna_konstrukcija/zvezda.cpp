@@ -25,7 +25,7 @@ int main()
 	for (int i = 0; i < n; i++){
 		if (i != mozda && !poznaje[i][mozda])
 			zvezda = false;
-		if (1 != mozda && !poznaje[mozda][i])
+		if (i != mozda && !poznaje[mozda][i])
 			zvezda = false;
 	}
 
