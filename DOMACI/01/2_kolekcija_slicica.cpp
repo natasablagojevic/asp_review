@@ -25,6 +25,7 @@ int main() {
     std::cin >> m;
 
     // Rešavanje upita
+    int ukupanBrojKolekcija = 0;
     for (int i = 0; i < m; i++) {
         // Učitavanje intervala [i, j]
         int a, b;
@@ -32,17 +33,18 @@ int main() {
 
         // Pronalaženje broja kolekcija koje zadovoljavaju uslov
         int brojKolekcija = 0;
-        for (int k = a; k <= b; k++) {
-            if (iznosNovca >= ceneSlicica[k]) {
+        for (int k = 0; k < n; k++) {
+            if (ceneSlicica[k] >= a && ceneSlicica[k] <= b && iznosNovca >= ceneSlicica[k]) {
                 iznosNovca -= ceneSlicica[k];
                 brojKolekcija++;
-            } else {
-                break; // Ako Nikola ne može više da kupuje, prekidamo petlju
             }
         }
 
+        // Dodavanje broja kolekcija za trenutni upit na ukupan broj kolekcija
+        ukupanBrojKolekcija += brojKolekcija;
+
         // Ispisivanje rezultata
-        std::cout << brojKolekcija << std::endl;
+        std::cout << ukupanBrojKolekcija << std::endl;
     }
 
     return 0;
