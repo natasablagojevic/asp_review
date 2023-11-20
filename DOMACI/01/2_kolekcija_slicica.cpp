@@ -1,51 +1,68 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include<vector>
+#include<algorithm>
+#include<cmath>
 
-int main() {
-    // Učitavanje iznosa novca koji Nikola ima
-    int iznosNovca;
-    std::cin >> iznosNovca;
+void napravi_drvo(const std::vector<int> &a, std::vector<int> &drvo, int k, int x, int y, const int &n)
+{
+    if (x == y) {
+        if (n % a[x] == 0)
+            drvo[k] = 1;
+        else 
+            drvo[k] = 0;
 
-    // Učitavanje broja kolekcija
-    int n;
-    std::cin >> n;
-
-    // Učitavanje cena sličica u svakoj kolekciji
-    std::vector<int> ceneSlicica(n);
-    for (int i = 0; i < n; i++) {
-        std::cin >> ceneSlicica[i];
+        return ;
     }
 
-    // Sortiranje cena sličica
-    std::sort(ceneSlicica.begin(), ceneSlicica.end());
+    int s = (x+y)/2;
 
-    // Učitavanje broja upita
+    napravi_drvo(a, drvo, 2*k, x, s, n);
+    napravi_drvo(a, drvo, 2*k+1, s+1, y, n);
+
+    drvo[k] = drvo[2*k] + drvo[2*k+1];
+}
+
+int segment(std::vector<int> &drvo, int k, int x, int y, int a, int b)
+{
+    if (x > b || y < a)
+        return 0;
+
+    if (x >= a && y <= b)
+        return drvo[k];
+
+    int s = (x+y)/2;
+
+    return segment(drvo, 2*k, x, s, a, b) + segment(drvo, 2*k+1, s+1, y, a, b);
+}
+
+int main()
+{   
+    int k, n;
+    std::cin >> k >> n;
+
+    std::vector<int> a(n);
+    for (int i = 0; i < n; i++) 
+        std::cin >> a[i];
+
     int m;
     std::cin >> m;
 
-    // Rešavanje upita
-    int ukupanBrojKolekcija = 0;
-    for (int i = 0; i < m; i++) {
-        // Učitavanje intervala [i, j]
-        int a, b;
-        std::cin >> a >> b;
+    int h = (int)ceil(log2(n));
+    int N = pow(2, h+1);
+    std::vector<int> drvo(N, 0);
 
-        // Pronalaženje broja kolekcija koje zadovoljavaju uslov
-        int brojKolekcija = 0;
-        for (int k = 0; k < n; k++) {
-            if (ceneSlicica[k] >= a && ceneSlicica[k] <= b && iznosNovca >= ceneSlicica[k]) {
-                iznosNovca -= ceneSlicica[k];
-                brojKolekcija++;
-            }
-        }
+    napravi_drvo(a, drvo, 1, 0, n-1, k);
+    
+    // for (int x : drvo)
+    //     std::cout << x << ' ';
+    // std::cout << std::endl;
 
-        // Dodavanje broja kolekcija za trenutni upit na ukupan broj kolekcija
-        ukupanBrojKolekcija += brojKolekcija;
-
-        // Ispisivanje rezultata
-        std::cout << ukupanBrojKolekcija << std::endl;
+    int x, y;
+    while (m--) {
+        std::cin >> x >> y;
+        std::cout << segment(drvo, 1, 0, n-1, x, y) << std:: endl;
     }
+
 
     return 0;
 }
