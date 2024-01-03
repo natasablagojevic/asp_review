@@ -1,40 +1,54 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <map>
+
 using namespace std;
-
-long long countRealisticPairs(vector<int>& delays) {
-    int n = delays.size();
-    sort(delays.begin(), delays.end()); // Sortiranje niza
-
-    long long count = 0;
-    for (int i = 0; i < n; ++i) {
-        int left = i + 1, right = n - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (delays[mid] - delays[i] <= mid - i) {
-                count += mid - i;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-    }
-
-    return count;
-}
 
 int main() {
     int n;
     cin >> n;
 
-    vector<int> delays(n);
+    vector<int> position(n), power(n);
+    vector<char> direction(n);
+
+    // Učitavanje pozicija, snage i smerova svakog ratnika
     for (int i = 0; i < n; ++i) {
-        cin >> delays[i];
+        cin >> position[i];
+    }
+    for (int i = 0; i < n; ++i) {
+        cin >> power[i];
+    }
+    for (int i = 0; i < n; ++i) {
+        cin >> direction[i];
     }
 
-    long long result = countRealisticPairs(delays);
-    cout << result << endl;
+    map<int, int> survivors;
+
+    for (int i = 0; i < n; ++i) {
+        if (direction[i] == 'D') {
+            // Ako ratnik ide u desno (D), dodajemo ga u mapu preživelih
+            survivors[position[i]] = power[i];
+        } else {
+            // Ako ratnik ide ulevo (L), proveravamo da li postoji borac na toj poziciji
+            auto it = survivors.lower_bound(position[i]);
+            if (it != survivors.begin()) {
+                --it;
+                if (it->second <= power[i]) {
+                    // Ako je pronađen ratnik sa manjom snagom, uklanjamo ga
+                    survivors.erase(it);
+                } else {
+                    // Ako je pronađen ratnik sa većom snagom, smanjujemo njegovu snagu za 1
+                    it->second -= 1;
+                }
+            }
+        }
+    }
+
+    // Ispis preživelih ratnika
+    for (const auto& survivor : survivors) {
+        cout << survivor.second << " ";
+    }
+    cout << endl;
 
     return 0;
 }
