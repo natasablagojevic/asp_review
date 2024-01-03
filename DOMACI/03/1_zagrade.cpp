@@ -1,29 +1,32 @@
 #include <iostream>
-#include <vector>
-using namespace std;
+#include <string>
 
-void generateParentheses(int open, int close, int n, int depth, string current) {
-    if (depth == 0) {
-        if (open == n && close == n) {
-            cout << current << endl;
+void generisanje(int d, int maxD, std::string &s, int i)
+{
+    int n = s.size();
+
+    if (i == n) {
+        std::cout << s << std::endl;
+    } else {
+        if (d < maxD && n - i - 1 >= d) {
+            s[i] = '(';
+            generisanje(d+1, maxD, s, i+1);
         }
-        return;
-    }
-
-    if (open < n) {
-        generateParentheses(open + 1, close, n, depth - 1, current + "(");
-    }
-
-    if (close < open) {
-        generateParentheses(open, close + 1, n, depth - 1, current + ")");
+        if (d > 0) {
+            s[i] = ')';
+            generisanje(d-1, maxD, s, i+1);
+        }
     }
 }
 
-int main() {
+int main()
+{
     int n, d;
-    cin >> n >> d;
+    std::cin >> n >> d;
 
-    generateParentheses(0, 0, n, d, "");
+    std::string s(n , ' ');
+
+    generisanje(0, d, s, 0);
 
     return 0;
 }
