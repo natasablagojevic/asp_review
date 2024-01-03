@@ -1,20 +1,21 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
-void generateParentheses(int open, int close, int n, int maxDepth, string current, vector<string>& result) {
-    if (current.size() == 2 * n) {
-        result.push_back(current);
+void generateParentheses(int open, int close, int n, int depth, string current) {
+    if (depth == 0) {
+        if (open == n && close == n) {
+            cout << current << endl;
+        }
         return;
     }
 
     if (open < n) {
-        generateParentheses(open + 1, close, n, maxDepth, current + "(", result);
+        generateParentheses(open + 1, close, n, depth - 1, current + "(");
     }
 
-    if (close < open && close < maxDepth) {
-        generateParentheses(open, close + 1, n, maxDepth, current + ")", result);
+    if (close < open) {
+        generateParentheses(open, close + 1, n, depth - 1, current + ")");
     }
 }
 
@@ -22,14 +23,7 @@ int main() {
     int n, d;
     cin >> n >> d;
 
-    vector<string> validParentheses;
-    generateParentheses(0, 0, n, d, "", validParentheses);
-
-    // Sortiranje i ispis validnih nizova
-    sort(validParentheses.begin(), validParentheses.end());
-    for (const string& s : validParentheses) {
-        cout << s << endl;
-    }
+    generateParentheses(0, 0, n, d, "");
 
     return 0;
 }
