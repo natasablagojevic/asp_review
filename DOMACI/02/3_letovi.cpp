@@ -1,54 +1,74 @@
-#include <iostream>
-#include <vector>
-#include <map>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-    int n;
-    cin >> n;
+void mergee(vector<pair<int,int>> &a, int l1, int r1, int l2 , int r2, vector<int> &cnt )
+{
+    vector<pair<int,int>> help(r2-l1+1);
+    int index = 0;
+    int lind = l1;
+    int rind = l2;
+    int curcnt = 0;
 
-    vector<int> position(n), power(n);
-    vector<char> direction(n);
-
-    // Učitavanje pozicija, snage i smerova svakog ratnika
-    for (int i = 0; i < n; ++i) {
-        cin >> position[i];
-    }
-    for (int i = 0; i < n; ++i) {
-        cin >> power[i];
-    }
-    for (int i = 0; i < n; ++i) {
-        cin >> direction[i];
-    }
-
-    map<int, int> survivors;
-
-    for (int i = 0; i < n; ++i) {
-        if (direction[i] == 'D') {
-            // Ako ratnik ide u desno (D), dodajemo ga u mapu preživelih
-            survivors[position[i]] = power[i];
-        } else {
-            // Ako ratnik ide ulevo (L), proveravamo da li postoji borac na toj poziciji
-            auto it = survivors.lower_bound(position[i]);
-            if (it != survivors.begin()) {
-                --it;
-                if (it->second <= power[i]) {
-                    // Ako je pronađen ratnik sa manjom snagom, uklanjamo ga
-                    survivors.erase(it);
-                } else {
-                    // Ako je pronađen ratnik sa većom snagom, smanjujemo njegovu snagu za 1
-                    it->second -= 1;
-                }
-            }
+    while( lind <= r1 && rind<= r2 ) {
+        if(a[lind].first <= a[rind].first){
+            curcnt++;
+            help[index++] = a[rind++];
+        } else{
+            cnt[ a[lind].second ] += curcnt;
+            help[index++] = a[lind++];
         }
     }
 
-    // Ispis preživelih ratnika
-    for (const auto& survivor : survivors) {
-        cout << survivor.second << " ";
+    while (lind <= r1) {
+        cnt[a[lind].second] += curcnt;
+        help[index++] = a[lind++];
     }
-    cout << endl;
+
+    while(rind <= r2){
+        help[index++] = a[rind++];
+    }
+
+    for(int i = l1; i <= r2; i++){
+        a[i] = help[i-l1];
+    }
+}
+
+void merge_sort(vector<pair<int,int> > &a , int l, int r, vector<int> &cnt) 
+{
+    if(l >= r )
+        return;
+
+    int mid = (l+r)/2;
+    merge_sort(a, l, mid, cnt);
+    merge_sort(a, mid+1, r, cnt);
+
+    mergee(a, l, mid, mid+1, r, cnt);
+}
+
+int main()
+{
+    int n; 
+    cin >> n;
+    
+    vector<pair<int,int> > a(n);
+    
+    for(int i = 0; i < n; i++) {
+        cin >> a[i].first;
+        a[i].first -= i;
+        a[i].second = i;
+    }
+
+    vector<int> cnt(n);
+
+    merge_sort(a, 0, n-1, cnt);
+
+    int sol = 0;
+    
+    for(int i = 0; i < n; i++){
+        sol += cnt[i];
+    }
+
+    cout << sol;
 
     return 0;
 }
